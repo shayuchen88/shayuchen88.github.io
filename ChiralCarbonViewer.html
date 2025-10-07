@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chiral Carbon Viewer</title>
+<script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+<style>
+  body { font-family: Arial; text-align:center; background-color:#ffffff; margin:0; padding:0; }
+  #viewer-container { width: 80%; max-width: 500px; height: 500px; margin: 20px auto; border:1px solid #ffffff; position: relative }
+</style>
+</head>
+<body>
+
+<h2>Interactive Chiral Carbon Viewer</h2>
+<div id="viewer-container"></div>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const element = document.getElementById('viewer-container');
+
+  // 创建 viewer 并绑定到 div
+  const viewer = $3Dmol.createViewer(element, {
+    backgroundColor: 'white'
+  });
+
+  // 甲烷原子
+  const atoms = [
+    { elem:'C', x:0, y:0, z:0, bonds:[1,2,3,4] },
+    { elem:'H', x:0.629, y:0.629, z:0.629, bonds:[0] },
+    { elem:'H', x:-0.629, y:-0.629, z:0.629, bonds:[0] },
+    { elem:'H', x:-0.629, y:0.629, z:-0.629, bonds:[0] },
+    { elem:'H', x:0.629, y:-0.629, z:-0.629, bonds:[0] },
+  ];
+
+  const model = viewer.addModel();
+  model.addAtoms(atoms);
+
+  // 中心 C
+  model.setStyle({serial:0}, {sphere:{radius:0.4, color:'black'}, stick:{radius:0.1, color:'gray'}});
+
+  // 四个 H，颜色不同、大小从大到小
+  const Hstyles = [
+    {radius:0.3, color:'red'},
+    {radius:0.25, color:'green'},
+    {radius:0.2, color:'blue'},
+    {radius:0.15, color:'orange'}
+  ];
+
+  for(let i=1; i<=4; i++){
+    model.setStyle({serial:i}, {sphere:Hstyles[i-1], stick:{radius:0.1, color:'gray'}});
+  }
+
+  viewer.zoomTo();
+  viewer.render();
+
+  // 确保 div 大小改变时画布自适应
+  window.addEventListener('resize', () => {
+    viewer.resize();
+    viewer.render();
+  });
+});
+</script>
+
+</body>
+</html>
+
+
+
