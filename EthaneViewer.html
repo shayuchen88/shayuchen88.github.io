@@ -42,15 +42,15 @@
       const viewer = $3Dmol.createViewer(element, { backgroundColor: 'white' });
 
       const baseAtoms = [
-        { elem: 'C', x: -0.7560, y: 0.0000, z: 0.0000, bonds: [1,2,3,4] },
-        { elem: 'C', x: 0.7560, y: 0.0000, z: 0.0000, bonds: [0,5,6,7] },
-        { elem:'H', x:-1.1404, y:0.6586, z:0.7845, bonds:[0] },
-        { elem:'H', x:-1.1404, y:0.3501, z:-0.9626, bonds:[0] },
-        { elem:'H', x:-1.1405, y:-1.0087, z:0.1781, bonds:[0] },
-        { elem:'H', x:1.1404, y:-0.3501, z:0.9626, bonds:[1] },
-        { elem:'H', x:1.1405, y:1.0087, z:-0.1781, bonds:[1] },
-        { elem:'H', x:1.1404, y:-0.6586, z:-0.7845, bonds:[1] }
-      ];
+  { elem: 'C', x: -0.7560, y: 0.0000, z: 0.0000, bonds: [1,2,3,4] }, // 左 C
+  { elem: 'C', x:  0.7560, y: 0.0000, z: 0.0000, bonds: [0,5,6,7] }, // 右 C
+  { elem:'H', x:-1.1404, y: 0.6586, z: 0.7845, bonds:[0] },          // 左红 H
+  { elem:'H', x:-1.1404, y: 0.3501, z:-0.9626, bonds:[0] },          // 左 H
+  { elem:'H', x:-1.1405, y:-1.0087, z: 0.1781, bonds:[0] },          // 左 H
+  { elem:'H', x: 1.1404, y: 0.6586, z: 0.7845, bonds:[1] },          // 右 H1（旋转后）
+  { elem:'H', x: 1.1404, y: 0.3501, z:-0.9626, bonds:[1] },          // 右红 H2（旋转后）
+  { elem:'H', x: 1.1404, y:-1.0087, z: 0.1781, bonds:[1] }           // 右 H3（旋转后）
+];
 
       function drawEthane(angleDeg) {
         viewer.removeAllModels();
