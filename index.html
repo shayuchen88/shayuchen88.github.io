@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Organic Chemistry Molecule Viewer</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #ffffff;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 40px;
+      letter-spacing: 0.5px;
+    }
+
+    .link-group {
+      display: flex;
+      gap: 32px;
+    }
+
+    a.link {
+      text-decoration: none;
+      color: #111;
+      font-size: 1rem;
+      font-weight: 500;
+      border: 1px solid #ddd;
+      padding: 10px 22px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    a.link:hover {
+      color: #000;
+      border-color: #000;
+      background: #f9f9f9;
+    }
+
+    @media (max-width: 480px) {
+      .link-group {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Organic Chemistry Molecule Viewer</h1>
+  <div class="link-group">
+    <a href="https://shayuchen88.github.io/EthaneViewer.html" class="link">Ethane Conformation</a>
+    <a href="https://shayuchen88.github.io/ChiralCarbonViewer.html" class="link">Chiral Carbon</a>
+    <a href="https://shayuchen88.github.io/ButaneViewer.html" class="link">Butane Conformation</a>
+  </div>
+</body>
+</html>
