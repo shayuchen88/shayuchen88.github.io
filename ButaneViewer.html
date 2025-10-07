@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Butane Conformation Viewer</title>
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      background-color: #ffffff; 
+      margin: 0; 
+      padding: 0;
+    }
+    #viewer-container {
+      width: 80%;
+      max-width: 600px;
+      aspect-ratio: 1 / 1;
+      margin: 20px auto;
+      border: 1px solid #ffffff;
+      position: relative;
+    }
+    input[type=range] { width: 80%; margin-top: 10px; }
+    button { margin: 5px; padding: 5px 15px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Butane Conformation Viewer</h2>
+  <div id="viewer-container"></div>
+
+  <label for="angleRange">Dihedral Angle: <span id="angleValue">0</span>°</label><br />
+  <input type="range" id="angleRange" min="0" max="360" value="0" />
+
+  <!-- 四个按钮 -->
+  <div id="dihedralButtons">
+    <button onclick="setAngle(0)">Fully Eclipsed</button>
+    <button onclick="setAngle(60)">Gauche</button>
+    <button onclick="setAngle(120)">Eclipsed</button>
+    <button onclick="setAngle(180)">Anti</button>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const element = document.getElementById('viewer-container');
+      const viewer = $3Dmol.createViewer(element, { backgroundColor: 'white' });
+      const angleInput = document.getElementById('angleRange');
+      const angleLabel = document.getElementById('angleValue');
+
+      const baseAtoms = [
+  { elem: 'C', x: -0.7560, y: 0.0000, z: 0.0000, bonds: [1,2,3,4] }, // 左 C
+  { elem: 'C', x:  0.7560, y: 0.0000, z: 0.0000, bonds: [0,5,6,7] }, // 右 C
+  { elem:'H', x:-1.1404, y: 0.6586, z: 0.7845, bonds:[0] },          // 左红 H
+  { elem:'H', x:-1.1404, y: 0.3501, z:-0.9626, bonds:[0] },          // 左 H
+  { elem:'H', x:-1.1405, y:-1.0087, z: 0.1781, bonds:[0] },          // 左 H
+  { elem:'H', x: 1.1404, y: 0.6586, z: 0.7845, bonds:[1] },          // 右 H1（旋转后）
+  { elem:'H', x: 1.1404, y: 0.3501, z:-0.9626, bonds:[1] },          // 右红 H2（旋转后）
+  { elem:'H', x: 1.1404, y:-1.0087, z: 0.1781, bonds:[1] }           // 右 H3（旋转后）
+];
+
+      let model = null;
+
+      function initEthane() {
+        model = viewer.addModel();
+        model.addAtoms(baseAtoms);
+        model.setStyle({}, { stick: { radius: 0.2 }, sphere: { radius: 0.3, colorscheme: "Jmol" } });
+        viewer.zoomTo();
+        viewer.render();
+      }
+
+      function drawEthane(angleDeg) {
+        if (!model) return;
+        const theta = (angleDeg * Math.PI) / 180;
+        const cosT = Math.cos(theta);
+        const sinT = Math.sin(theta);
+
+        const atoms = baseAtoms.map((a, i) => {
+          // 左侧 C 和 H 不旋转
+          if (i <= 4) return { ...a };
+
+          // 右侧 C 及 H 绕 C–C 轴旋转
+          const rel = { x: a.x - 0.7560, y: a.y, z: a.z };
+          const ry = rel.y * cosT - rel.z * sinT;
+          const rz = rel.y * sinT + rel.z * cosT;
+          return { elem: a.elem, x: rel.x + 0.7560, y: ry, z: rz, bonds: a.bonds };
+        });
+
+        const molAtoms = model.selectedAtoms({});
+        molAtoms.forEach((atom, i) => {
+          atom.x = atoms[i].x;
+          atom.y = atoms[i].y;
+          atom.z = atoms[i].z;
+        });
+
+        // 样式
+        model.setStyle({}, { stick: { radius: 0.2 }, sphere: { radius: 0.3, colorscheme: "Jmol" } });
+
+        // 放大红色 H
+        const leftH = molAtoms[2];
+        const rightH = molAtoms[5];
+        if (leftH) model.setStyle({ index: leftH.index }, { stick: { radius: 0.2 }, sphere: { color: "red", radius: 0.6 } });
+        if (rightH) model.setStyle({ index: rightH.index }, { stick: { radius: 0.2 }, sphere: { color: "red", radius: 0.6 } });
+
+        viewer.render();
+      }
+
+      // 滑条绑定
+      angleInput.addEventListener('input', e => {
+        const angle = parseInt(e.target.value);
+        angleLabel.textContent = angle;
+        drawEthane(angle);
+      });
+
+      // 按钮绑定
+      window.setAngle = function(angle) {
+        angleInput.value = angle;
+        angleLabel.textContent = angle;
+        drawEthane(angle);
+      }
+
+      // 初始化为 Fully Eclipsed
+      initEthane();
+      drawEthane(0);
+      angleInput.value = 0;
+      angleLabel.textContent = 0;
+
+      window.addEventListener('resize', () => {
+        viewer.resize();
+        viewer.render();
+      });
+    });
+  </script>
+</body>
+</html>
+
+
